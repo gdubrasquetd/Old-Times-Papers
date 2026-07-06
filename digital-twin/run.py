@@ -2,9 +2,9 @@
 Enchaîne : détection (YOLO) -> OCR routé (Kraken + doctr) -> jumeau HTML.
 Chaque étape tourne dans son env conda via subprocess.
 
-    python make_twin.py <slug|image.jpg> [--open]
+    python run.py <slug|image.jpg> [--open]
 
-Ex : python make_twin.py le_temps_1936-08-08 --open
+Ex : python run.py le_temps_1936-08-08 --open
 """
 import argparse, subprocess, sys, webbrowser
 from pathlib import Path
@@ -47,9 +47,9 @@ def main():
     blocks = workdir / "blocks.json"
     twin = workdir / "twin.html"
 
-    run("bloc_detection", "twin_detect.py", args.target, blocks)
-    run("pero", "twin_ocr.py", blocks, "--stage", "pero")   # PERO : un seul moteur pour tout le texte
-    run("oldspapers", "twin_build.py", blocks, twin)        # PIL suffit
+    run("bloc_detection", "detect.py", args.target, blocks)
+    run("pero", "ocr.py", blocks, "--stage", "pero")   # PERO : un seul moteur pour tout le texte
+    run("oldspapers", "build.py", blocks, twin)        # PIL suffit
 
     print(f"\n✓ Jumeau prêt : {twin}")
     if args.open:

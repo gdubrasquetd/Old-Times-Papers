@@ -3,7 +3,7 @@ Politique figée (cf. RECAP_OCR.md) : PERO-OCR (modèle presse européenne) pour
 le texte — corps, titres, texte isolé (il fait sa propre détection de lignes robuste,
 meilleur partout : ~4% WER). 'header' -> nom du journal (pas d'OCR) ; 'illustration' -> ignoré.
 
-    pero : python twin_ocr.py <blocks.json> --stage pero
+    pero : python ocr.py <blocks.json> --stage pero
 (kraken/doctr restent dispo en secours, dans leurs envs respectifs.)
 """
 import argparse, json, re
@@ -12,8 +12,8 @@ from PIL import Image
 
 TEXT = {"bloc de texte", "titre", "texte isolé"}
 ROUTE = {c: "pero" for c in TEXT}         # PERO pour tout le texte
-PERO_MODEL = (Path(__file__).resolve().parent.parent
-              / "bench" / "comp" / "models" / "pero" / "pero_eu_cz_print_newspapers_2022-09-26")
+PERO_MODEL = (Path(__file__).resolve().parent
+              / "benchmark" / "comp" / "models" / "pero" / "pero_eu_cz_print_newspapers_2022-09-26")
 REC_MODEL = (r"C:\Users\antwi\AppData\Local\htrmopo\htrmopo"
              r"\d96caf7a-122e-5576-ab2b-a246c4e64221\catmus-print-fondue-large.mlmodel")
 PAD = 6

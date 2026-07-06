@@ -1,5 +1,5 @@
-# ============ Oldspapers — .gitignore ============
-# Objectif : versionner le CODE et la DOC, pas les modèles/données/artefacts lourds.
+# ============ Old Times Papers — .gitignore ============
+# On versionne le CODE et la DOC, pas les modèles/données/artefacts lourds.
 
 # --- Python ---
 __pycache__/
@@ -15,15 +15,13 @@ __pycache__/
 *.onnx
 *.h5
 *.ckpt
-OCR/bench/comp/models/
-OCR/models/
-bloc_detection/runs/
-bloc_detection/dataset/
-bloc_detection/dataset_blocs/
+digital-twin/benchmark/comp/models/
+block-detection/training/runs/
+block-detection/training/dataset/
+block-detection/training/dataset_blocs/
 
 # --- Données / scans / caches ---
-cache/
-annotation_tool/data/
+block-detection/annotation/data/
 *.jpg
 *.jpeg
 *.zip
@@ -31,25 +29,24 @@ annotation_tool/data/
 *.tar.gz
 
 # --- Crops & intermédiaires OCR (régénérables) ---
-OCR/bench/crops/
-OCR/bench/crops_test/
-OCR/bench/_pre/
-OCR/bench/_tune/
-OCR/bench/comp/_tess/
-OCR/twin/out/
-test_figaro_1930/
-test_layout_libs/
+digital-twin/benchmark/crops/
+digital-twin/benchmark/crops_test/
+digital-twin/benchmark/_pre/
+digital-twin/benchmark/_tune/
+digital-twin/benchmark/comp/_tess/
+digital-twin/out/
 
 # --- Sorties OCR / rapports générés ---
-OCR/bench/results*.json
-OCR/bench/*_all.json
-OCR/bench/comp/res_*.json
-OCR/bench/*.html
-OCR/bench/comp/*.html
-OCR/bench/comp/comparison.html
-*.log
+digital-twin/benchmark/results*.json
+digital-twin/benchmark/*_all.json
+digital-twin/benchmark/comp/res_*.json
+digital-twin/benchmark/*.html
+digital-twin/benchmark/comp/*.html
+
+# --- Archive de scripts exploratoires (superseded, gardés en local) ---
+digital-twin/benchmark/attic/
 
 # --- Divers ---
-0.7
+*.log
 .DS_Store
 Thumbs.db

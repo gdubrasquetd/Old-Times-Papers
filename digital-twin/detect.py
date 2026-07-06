@@ -1,6 +1,6 @@
 """Étape 1 de la pipeline complète : détecte les blocs typés d'une une.
 Env : bloc_detection (ultralytics).
-    python twin_detect.py <slug|image.jpg> <out_blocks.json>
+    python detect.py <slug|image.jpg> <out_blocks.json>
 Sortie : blocks.json {slug, img_w, img_h, blocks:[{id,class,conf,box(px),nbox(0-1),text:null}]}
 """
 import json, sys
@@ -8,9 +8,9 @@ from pathlib import Path
 from PIL import Image
 from ultralytics import YOLO
 
-ROOT = Path(r"C:/Users/antwi/Projets_informatiques/Oldspapers")
-WEIGHTS = ROOT / "bloc_detection/runs/multiclass_yolo11s_v3/weights/best.pt"
-IMG_DIR = ROOT / "annotation_tool/data/images"
+ROOT = Path(__file__).resolve().parent.parent          # racine du projet
+WEIGHTS = ROOT / "block-detection/training/runs/multiclass_yolo11s_v3/weights/best.pt"
+IMG_DIR = ROOT / "block-detection/annotation/data/images"
 
 arg = sys.argv[1]
 out = Path(sys.argv[2])
