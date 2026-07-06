@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Oldspapers — Annotation</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>Outil d'annotation Oldspapers</h1>
+  <nav>
+    <a href="/?view=work" {% if view == 'work' %}class="active"{% endif %}>
+      À annoter <span class="badge">{{ stats.todo + stats.in_progress }}</span>
+    </a>
+    <a href="/?view=in_progress" {% if view == 'in_progress' %}class="active"{% endif %}>
+      En cours <span class="badge">{{ stats.in_progress }}</span>
+    </a>
+    <a href="/?view=done" {% if view == 'done' %}class="active"{% endif %}>
+      Terminé <span class="badge">{{ stats.done }}</span>
+    </a>
+    <a href="/?view=all" {% if view == 'all' %}class="active"{% endif %}>
+      Tout <span class="badge">{{ stats.total }}</span>
+    </a>
+    <a href="/corrections">🔧 Corrections</a>
+    <a href="/api/export" target="_blank">Export JSON</a>
+    <span class="stat" id="anno-count">{{ stats.annotations }} annotations</span>
+    <span class="stat" id="replenish-status">
+      {% if replenishing %}🔄 téléchargement en cours…{% endif %}
+    </span>
+  </nav>
+</header>
+
+<main>
+  <aside class="filters">
+    <h3>Filtres par journal</h3>
+    <ul>
+      <li><a href="/?view={{ view }}" {% if not journal_filter %}class="active"{% endif %}>Tous</a></li>
+      {% for j in journals %}
+      <li><a href="/?journal={{ j|urlencode }}&view={{ view }}"
+             {% if journal_filter == j %}class="active"{% endif %}>{{ j }}</a></li>
+      {% endfor %}
+    </ul>
+
+    <h3>Stats annotations</h3>
+    <ul class="label-stats">
+      {% for name, n in stats.by_label.items() %}
+      <li>{{ name }} <span class="n">{{ n }}</span></li>
+      {% endfor %}
+    </ul>
+
+    {% if view == 'work' %}
+    <div style="margin-top:20px; padding:10px; background:#fafafa; border-radius:4px; font-size:11px; color:#555;">
+      Affichage des <b>{{ images|length }}</b> prochaines unes à annoter
+      (taille de page : {{ page_size }}).<br><br>
+      Quand le pool descend sous {{ 8 }} unes en attente, de nouvelles unes
+      sont téléchargées automatiquement en arrière-plan.
+    </div>
+    {% endif %}
+  </aside>
+
+  <section class="grid">
+    {% for img in images %}
+    <article class="card status-{{ img.status }}">
+      <a href="/annotate/{{ img.id }}">
+        <img src="/api/image/{{ img.id }}/thumb" alt="{{ img.slug }}" loading="lazy">
+        <div class="meta">
+          <strong>{{ img.journal }}</strong>
+          <span class="date">{{ img.iso_date }}</span>
+          <span class="status">{{ img.status }}</span>
+          {% if img.n_annotations > 0 %}
+          <span class="anno">{{ img.n_annotations }} annot.</span>
+          {% endif %}
+        </div>
+      </a>
+    </article>
+    {% else %}
+    <p style="grid-column: 1/-1; padding: 40px; text-align: center; color: #888;">
+      Aucune une à afficher.
+      {% if view == 'work' %}
+        Un téléchargement automatique est probablement en cours, rechargez la page dans un instant.
+      {% endif %}
+    </p>
+    {% endfor %}
+  </section>
+</main>
+
+<script>
+// Polling leger : refresh du statut "telechargement" et compteurs
+async function pollStatus() {
+  try {
+    const s = await fetch('/api/replenish/status').then(r => r.json());
+    const el = document.getElementById('replenish-status');
+    if (el) {
+      el.innerHTML = s.replenishing
+        ? '🔄 téléchargement en cours…'
+        : (s.todo === 0 ? '⚠️ plus rien à annoter' : '');
+    }
+  } catch (e) {}
+}
+setInterval(pollStatus, 5000);
+</script>
+</body>
+</html>

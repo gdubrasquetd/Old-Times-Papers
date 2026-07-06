@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Annoter — {{ image.slug }}</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="annotate-page">
+<header>
+  <h1>{{ image.journal }} — {{ image.iso_date }}</h1>
+  <nav>
+    <a href="/">← Liste</a>
+    <button id="btn-save" class="ok">Sauver et marquer comme terminé</button>
+    <button id="btn-skip" class="warn">Skip (ignorer)</button>
+  </nav>
+</header>
+
+<main class="annotate-main">
+  <aside class="labels-panel">
+    <h3>Labels</h3>
+    <p class="hint">Choisir un label puis dessiner sur l'image.<br>
+       <kbd>Suppr</kbd> efface la sélection. <kbd>Esc</kbd> annule.
+       <kbd>Ctrl</kbd>+<kbd>Z</kbd> annule la dernière action.<br>
+       Molette = zoom. Clic-droit + glisser = pan.
+       Dessiner/déplacer près d'un bord fait défiler la vue.<br>
+       <kbd>h</kbd> = afficher/masquer les zones de chevauchement (en rouge).<br>
+       <kbd>v</kbd> = mode verbose (perf) dans la console (F12).</p>
+    <ul class="labels-list">
+      {% for l in labels %}
+      <li data-label-id="{{ l.id }}"
+          data-label-color="{{ l.color }}"
+          data-label-name="{{ l.name }}"
+          style="--c: {{ l.color }}">
+        <span class="swatch"></span>
+        <span class="name">{{ l.name }}</span>
+        <span class="key">{{ loop.index }}</span>
+      </li>
+      {% endfor %}
+    </ul>
+    <button id="btn-detect" class="ok" style="width:100%; margin-top:8px;">
+      🔍 Détecter les blocs (IA)
+    </button>
+    <button id="btn-merge" class="ok" style="width:100%; margin-top:6px;">
+      🔗 Fusionner les blocs chevauchants
+    </button>
+    <label class="hint" style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+      Alignement
+      <input id="merge-thresh" type="range" min="0.1" max="0.95" step="0.05"
+             value="0.5" style="flex:1;" title="Alignement minimal pour fusionner (même colonne / même ligne). Plus haut = plus strict. Les orientations opposées ne fusionnent que si une boîte est presque incluse dans l'autre.">
+      <span id="merge-thresh-val" style="min-width:2.4em; text-align:right;">0.50</span>
+    </label>
+    <button id="btn-suggest" class="ok" style="display:none; width:100%; margin-top:6px;"></button>
+    <button id="btn-review" class="ok" style="width:100%; margin-top:6px;">
+      🔧 Réviser (convention)
+    </button>
+    <p class="hint" id="suggest-hint">
+      La détection ajoute des boîtes avec le label <b>actuellement sélectionné</b>.
+      Reclasse (touches 1-9), ajuste les coins, supprime le bruit.
+    </p>
+    <h3>Annotations sur cette une</h3>
+    <button id="btn-clear-all" class="warn" style="width:100%; margin-bottom:6px;">
+      🗑 Tout supprimer
+    </button>
+    <ul id="anno-list" class="anno-list"></ul>
+  </aside>
+
+  <div class="canvas-wrap">
+    <div class="canvas-stage" id="stage">
+      <img id="bgimg" alt="">
+      <canvas id="canvas"></canvas>
+    </div>
+    <div class="status-bar">
+      <span id="status">Chargement…</span>
+      <span id="coord"></span>
+    </div>
+  </div>
+</main>
+
+<!-- Modale de révision (propositions de correction avant/après) -->
+<div id="review-modal" class="modal-overlay" style="display:none;">
+  <div class="modal-panel">
+    <header class="modal-head">
+      <h2 id="review-title">Révision des annotations</h2>
+      <div>
+        <button id="review-reject-all" class="warn">Tout refuser</button>
+        <button id="review-close">✕ Fermer</button>
+      </div>
+    </header>
+    <p class="hint" style="margin:0 16px;">
+      Propositions issues du modèle + de la convention. À gauche = actuel, à droite = proposé.
+      <b>Accepter</b> applique, <b>Corriger</b> applique puis sélectionne pour ajuster, <b>Refuser</b> ignore.
+      Tout est annulable avec <kbd>Ctrl</kbd>+<kbd>Z</kbd>.
+    </p>
+    <div id="review-cards" class="review-cards"></div>
+  </div>
+</div>
+
+<script>
+  window.IMAGE_ID = {{ image.id }};
+  window.IMAGE_W  = {{ image.w }};
+  window.IMAGE_H  = {{ image.h }};
+</script>
+<script src="/static/annotate.js"></script>
+</body>
+</html>

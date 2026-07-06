@@ -1,0 +1,13 @@
+name: oldspapers
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.12
+  - requests>=2.31
+  - pillow             # preprocessing images pour OCR
+  - pytesseract        # wrapper Python pour Tesseract OCR
+  # Dépendances optionnelles pour extensions futures :
+  # - beautifulsoup4   # parsing HTML plus poussé
+  # - lxml             # parser XML rapide (notamment pour OCR ALTO)
+  # - pandas           # tableaux de données (corpus, statistiques)

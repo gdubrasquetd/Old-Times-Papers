@@ -1,0 +1,324 @@
+[
+  {
+    "file": "le_figaro_1937-03-22__00__header.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "header",
+    "conf": 0.82,
+    "box": [
+      1082,
+      302,
+      3700,
+      678
+    ],
+    "w": 2618,
+    "h": 376
+  },
+  {
+    "file": "le_figaro_1937-03-22__01__titre.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "titre",
+    "conf": 0.95,
+    "box": [
+      2794,
+      986,
+      4122,
+      1409
+    ],
+    "w": 1328,
+    "h": 423
+  },
+  {
+    "file": "le_figaro_1937-03-22__02__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.87,
+    "box": [
+      89,
+      1258,
+      758,
+      5287
+    ],
+    "w": 669,
+    "h": 4029
+  },
+  {
+    "file": "le_figaro_1937-03-22__03__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      784,
+      1605,
+      2078,
+      3151
+    ],
+    "w": 1294,
+    "h": 1546
+  },
+  {
+    "file": "le_figaro_1937-03-22__04__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.9,
+    "box": [
+      4145,
+      1646,
+      4826,
+      6540
+    ],
+    "w": 681,
+    "h": 4894
+  },
+  {
+    "file": "le_figaro_1937-03-22__05__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.94,
+    "box": [
+      2109,
+      2482,
+      2789,
+      4439
+    ],
+    "w": 680,
+    "h": 1957
+  },
+  {
+    "file": "le_figaro_1937-03-22__06__titre.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "titre",
+    "conf": 0.76,
+    "box": [
+      785,
+      3311,
+      2098,
+      3784
+    ],
+    "w": 1313,
+    "h": 473
+  },
+  {
+    "file": "le_figaro_1937-03-22__07__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.94,
+    "box": [
+      3468,
+      3740,
+      4143,
+      6526
+    ],
+    "w": 675,
+    "h": 2786
+  },
+  {
+    "file": "le_figaro_1937-03-22__08__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.97,
+    "box": [
+      789,
+      4073,
+      1423,
+      5278
+    ],
+    "w": 634,
+    "h": 1205
+  },
+  {
+    "file": "le_figaro_1937-03-22__09__bloc_de_texte.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      1459,
+      4357,
+      2097,
+      5268
+    ],
+    "w": 638,
+    "h": 911
+  },
+  {
+    "file": "intransigeant_1909-03-26__00__header.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "header",
+    "conf": 0.86,
+    "box": [
+      568,
+      230,
+      4420,
+      686
+    ],
+    "w": 3852,
+    "h": 456
+  },
+  {
+    "file": "intransigeant_1909-03-26__01__titre.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "titre",
+    "conf": 0.64,
+    "box": [
+      286,
+      1042,
+      4166,
+      1356
+    ],
+    "w": 3880,
+    "h": 314
+  },
+  {
+    "file": "intransigeant_1909-03-26__02__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      116,
+      1868,
+      915,
+      3853
+    ],
+    "w": 799,
+    "h": 1985
+  },
+  {
+    "file": "intransigeant_1909-03-26__03__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "box": [
+      3321,
+      1880,
+      4109,
+      3125
+    ],
+    "w": 788,
+    "h": 1245
+  },
+  {
+    "file": "intransigeant_1909-03-26__04__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      2519,
+      2007,
+      3307,
+      4289
+    ],
+    "w": 788,
+    "h": 2282
+  },
+  {
+    "file": "intransigeant_1909-03-26__05__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "box": [
+      1717,
+      2022,
+      2518,
+      4296
+    ],
+    "w": 801,
+    "h": 2274
+  },
+  {
+    "file": "intransigeant_1909-03-26__06__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      927,
+      3933,
+      1723,
+      6283
+    ],
+    "w": 796,
+    "h": 2350
+  },
+  {
+    "file": "intransigeant_1909-03-26__07__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "box": [
+      128,
+      3939,
+      920,
+      5843
+    ],
+    "w": 792,
+    "h": 1904
+  },
+  {
+    "file": "intransigeant_1909-03-26__08__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      2524,
+      4859,
+      3311,
+      6770
+    ],
+    "w": 787,
+    "h": 1911
+  },
+  {
+    "file": "intransigeant_1909-03-26__09__bloc_de_texte.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "box": [
+      1729,
+      4862,
+      2524,
+      6778
+    ],
+    "w": 795,
+    "h": 1916
+  },
+  {
+    "file": "le_figaro_1937-03-22__ti0__texte_isolé.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "texte isolé",
+    "conf": 0.84,
+    "box": [
+      101,
+      6459,
+      743,
+      6879
+    ],
+    "w": 642,
+    "h": 420
+  },
+  {
+    "file": "le_figaro_1937-03-22__ti1__texte_isolé.png",
+    "image": "le_figaro_1937-03-22",
+    "class": "texte isolé",
+    "conf": 0.8,
+    "box": [
+      2118,
+      4867,
+      2797,
+      5186
+    ],
+    "w": 679,
+    "h": 319
+  },
+  {
+    "file": "intransigeant_1909-03-26__ti0__texte_isolé.png",
+    "image": "intransigeant_1909-03-26",
+    "class": "texte isolé",
+    "conf": 0.58,
+    "box": [
+      921,
+      1925,
+      1716,
+      2151
+    ],
+    "w": 795,
+    "h": 226
+  }
+]

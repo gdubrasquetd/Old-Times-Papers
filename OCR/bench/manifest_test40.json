@@ -1,0 +1,338 @@
+[
+  {
+    "file": "petit_journal_1902-04-25__00__header.png",
+    "image": "petit_journal_1902-04-25",
+    "class": "header",
+    "conf": 0.87,
+    "w": 3055,
+    "h": 456
+  },
+  {
+    "file": "petit_journal_1902-04-25__52__titre.png",
+    "image": "petit_journal_1902-04-25",
+    "class": "titre",
+    "conf": 0.37,
+    "w": 847,
+    "h": 62
+  },
+  {
+    "file": "petit_journal_1902-04-25__63__bloc_de_texte.png",
+    "image": "petit_journal_1902-04-25",
+    "class": "bloc de texte",
+    "conf": 0.94,
+    "w": 791,
+    "h": 747
+  },
+  {
+    "file": "petit_journal_1902-04-25__50__bloc_de_texte.png",
+    "image": "petit_journal_1902-04-25",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 797,
+    "h": 1606
+  },
+  {
+    "file": "petit_journal_1902-04-25__49__bloc_de_texte.png",
+    "image": "petit_journal_1902-04-25",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 786,
+    "h": 912
+  },
+  {
+    "file": "humanite_1906-05-16__00__header.png",
+    "image": "humanite_1906-05-16",
+    "class": "header",
+    "conf": 0.79,
+    "w": 3785,
+    "h": 449
+  },
+  {
+    "file": "humanite_1906-05-16__20__titre.png",
+    "image": "humanite_1906-05-16",
+    "class": "titre",
+    "conf": 0.4,
+    "w": 815,
+    "h": 81
+  },
+  {
+    "file": "humanite_1906-05-16__41__bloc_de_texte.png",
+    "image": "humanite_1906-05-16",
+    "class": "bloc de texte",
+    "conf": 0.93,
+    "w": 800,
+    "h": 811
+  },
+  {
+    "file": "humanite_1906-05-16__39__bloc_de_texte.png",
+    "image": "humanite_1906-05-16",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 792,
+    "h": 919
+  },
+  {
+    "file": "humanite_1906-05-16__48__bloc_de_texte.png",
+    "image": "humanite_1906-05-16",
+    "class": "bloc de texte",
+    "conf": 0.91,
+    "w": 804,
+    "h": 1422
+  },
+  {
+    "file": "le_matin_1910-09-13__01__header.png",
+    "image": "le_matin_1910-09-13",
+    "class": "header",
+    "conf": 0.91,
+    "w": 2228,
+    "h": 512
+  },
+  {
+    "file": "le_matin_1910-09-13__09__titre.png",
+    "image": "le_matin_1910-09-13",
+    "class": "titre",
+    "conf": 0.84,
+    "w": 1685,
+    "h": 166
+  },
+  {
+    "file": "le_matin_1910-09-13__40__bloc_de_texte.png",
+    "image": "le_matin_1910-09-13",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 798,
+    "h": 1098
+  },
+  {
+    "file": "le_matin_1910-09-13__42__bloc_de_texte.png",
+    "image": "le_matin_1910-09-13",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 799,
+    "h": 1203
+  },
+  {
+    "file": "le_matin_1910-09-13__26__bloc_de_texte.png",
+    "image": "le_matin_1910-09-13",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 795,
+    "h": 611
+  },
+  {
+    "file": "le_journal_1914-10-01__10__titre.png",
+    "image": "le_journal_1914-10-01",
+    "class": "titre",
+    "conf": 0.89,
+    "w": 2067,
+    "h": 405
+  },
+  {
+    "file": "le_journal_1914-10-01__49__bloc_de_texte.png",
+    "image": "le_journal_1914-10-01",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 1060,
+    "h": 877
+  },
+  {
+    "file": "le_journal_1914-10-01__46__bloc_de_texte.png",
+    "image": "le_journal_1914-10-01",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 1040,
+    "h": 1101
+  },
+  {
+    "file": "le_journal_1914-10-01__44__bloc_de_texte.png",
+    "image": "le_journal_1914-10-01",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 1052,
+    "h": 1505
+  },
+  {
+    "file": "le_journal_1914-10-01__23__bloc_de_texte.png",
+    "image": "le_journal_1914-10-01",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 1050,
+    "h": 1698
+  },
+  {
+    "file": "journal_des_debats_1919-08-27__06__header.png",
+    "image": "journal_des_debats_1919-08-27",
+    "class": "header",
+    "conf": 0.85,
+    "w": 2863,
+    "h": 318
+  },
+  {
+    "file": "journal_des_debats_1919-08-27__05__titre.png",
+    "image": "journal_des_debats_1919-08-27",
+    "class": "titre",
+    "conf": 0.84,
+    "w": 688,
+    "h": 102
+  },
+  {
+    "file": "journal_des_debats_1919-08-27__63__bloc_de_texte.png",
+    "image": "journal_des_debats_1919-08-27",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 804,
+    "h": 659
+  },
+  {
+    "file": "journal_des_debats_1919-08-27__57__bloc_de_texte.png",
+    "image": "journal_des_debats_1919-08-27",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 802,
+    "h": 1394
+  },
+  {
+    "file": "action_francaise_1926-08-21__03__header.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "header",
+    "conf": 0.88,
+    "w": 3311,
+    "h": 395
+  },
+  {
+    "file": "action_francaise_1926-08-21__04__titre.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "titre",
+    "conf": 0.39,
+    "w": 1419,
+    "h": 93
+  },
+  {
+    "file": "action_francaise_1926-08-21__42__bloc_de_texte.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "bloc de texte",
+    "conf": 0.97,
+    "w": 770,
+    "h": 842
+  },
+  {
+    "file": "action_francaise_1926-08-21__47__bloc_de_texte.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 779,
+    "h": 939
+  },
+  {
+    "file": "action_francaise_1926-08-21__36__bloc_de_texte.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "bloc de texte",
+    "conf": 0.97,
+    "w": 776,
+    "h": 733
+  },
+  {
+    "file": "le_temps_1934-03-24__04__header.png",
+    "image": "le_temps_1934-03-24",
+    "class": "header",
+    "conf": 0.93,
+    "w": 2208,
+    "h": 683
+  },
+  {
+    "file": "le_temps_1934-03-24__54__titre.png",
+    "image": "le_temps_1934-03-24",
+    "class": "titre",
+    "conf": 0.84,
+    "w": 554,
+    "h": 84
+  },
+  {
+    "file": "le_temps_1934-03-24__56__bloc_de_texte.png",
+    "image": "le_temps_1934-03-24",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 921,
+    "h": 1404
+  },
+  {
+    "file": "le_temps_1934-03-24__22__bloc_de_texte.png",
+    "image": "le_temps_1934-03-24",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 917,
+    "h": 1405
+  },
+  {
+    "file": "le_temps_1934-03-24__53__bloc_de_texte.png",
+    "image": "le_temps_1934-03-24",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 929,
+    "h": 809
+  },
+  {
+    "file": "petit_parisien_1935-05-15__04__header.png",
+    "image": "petit_parisien_1935-05-15",
+    "class": "header",
+    "conf": 0.83,
+    "w": 1446,
+    "h": 176
+  },
+  {
+    "file": "petit_parisien_1935-05-15__22__titre.png",
+    "image": "petit_parisien_1935-05-15",
+    "class": "titre",
+    "conf": 0.33,
+    "w": 715,
+    "h": 110
+  },
+  {
+    "file": "petit_parisien_1935-05-15__21__bloc_de_texte.png",
+    "image": "petit_parisien_1935-05-15",
+    "class": "bloc de texte",
+    "conf": 0.95,
+    "w": 356,
+    "h": 1438
+  },
+  {
+    "file": "petit_parisien_1935-05-15__27__bloc_de_texte.png",
+    "image": "petit_parisien_1935-05-15",
+    "class": "bloc de texte",
+    "conf": 0.97,
+    "w": 355,
+    "h": 618
+  },
+  {
+    "file": "petit_parisien_1935-05-15__29__bloc_de_texte.png",
+    "image": "petit_parisien_1935-05-15",
+    "class": "bloc de texte",
+    "conf": 0.96,
+    "w": 351,
+    "h": 1478
+  },
+  {
+    "file": "journal_des_debats_1919-08-27__27__texte_isolé.png",
+    "image": "journal_des_debats_1919-08-27",
+    "class": "texte isolé",
+    "conf": 0.85,
+    "w": 801,
+    "h": 519
+  },
+  {
+    "file": "action_francaise_1926-08-21__02__texte_isolé.png",
+    "image": "action_francaise_1926-08-21",
+    "class": "texte isolé",
+    "conf": 0.76,
+    "w": 1195,
+    "h": 424
+  },
+  {
+    "file": "le_journal_1914-10-01__21__texte_isolé.png",
+    "image": "le_journal_1914-10-01",
+    "class": "texte isolé",
+    "conf": 0.87,
+    "w": 2115,
+    "h": 387
+  }
+]

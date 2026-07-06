@@ -1,0 +1,55 @@
+# ============ Oldspapers — .gitignore ============
+# Objectif : versionner le CODE et la DOC, pas les modèles/données/artefacts lourds.
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.ipynb_checkpoints/
+
+# --- Poids / modèles (lourds, re-téléchargeables) ---
+*.pt
+*.pth
+*.mlmodel
+*.onnx
+*.h5
+*.ckpt
+OCR/bench/comp/models/
+OCR/models/
+bloc_detection/runs/
+bloc_detection/dataset/
+bloc_detection/dataset_blocs/
+
+# --- Données / scans / caches ---
+cache/
+annotation_tool/data/
+*.jpg
+*.jpeg
+*.zip
+*.tar
+*.tar.gz
+
+# --- Crops & intermédiaires OCR (régénérables) ---
+OCR/bench/crops/
+OCR/bench/crops_test/
+OCR/bench/_pre/
+OCR/bench/_tune/
+OCR/bench/comp/_tess/
+OCR/twin/out/
+test_figaro_1930/
+test_layout_libs/
+
+# --- Sorties OCR / rapports générés ---
+OCR/bench/results*.json
+OCR/bench/*_all.json
+OCR/bench/comp/res_*.json
+OCR/bench/*.html
+OCR/bench/comp/*.html
+OCR/bench/comp/comparison.html
+*.log
+
+# --- Divers ---
+0.7
+.DS_Store
+Thumbs.db

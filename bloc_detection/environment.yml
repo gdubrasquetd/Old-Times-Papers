@@ -1,0 +1,19 @@
+name: bloc_detection
+channels:
+  - pytorch
+  - nvidia
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+      # torch CUDA — RTX 3050 Laptop. IMPORTANT : --index-url (et non
+      # --extra-index-url), sinon pip retombe sur le wheel CPU de PyPI.
+      # cu124 marche avec un driver récent (rétro-compatible CUDA 13).
+      - --index-url https://download.pytorch.org/whl/cu124
+      - torch
+      - torchvision
+      # ultralytics et opencv ne sont pas sur l'index pytorch -> extra-index
+      - --extra-index-url https://pypi.org/simple
+      - ultralytics        # YOLO11 + RT-DETR, même API
+      - opencv-python

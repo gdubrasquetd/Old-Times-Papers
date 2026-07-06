@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Corrections proposées</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="corrections-page">
+<header>
+  <h1>Corrections</h1>
+  <nav>
+    <a href="/">← Liste</a>
+    <button id="btn-compute" class="ok">⟳ Calculer (toutes les unes)</button>
+    <button id="btn-reject-all" class="warn">Tout refuser</button>
+    <span id="status" style="margin-left:10px; color:#bbb;"></span>
+  </nav>
+</header>
+
+<main class="corr-layout">
+  <!-- Gauche : éditeur d'annotation (réutilise la page /annotate dans une iframe) -->
+  <section class="corr-editor">
+    <iframe id="editor-frame" title="éditeur"></iframe>
+    <div id="editor-empty" class="editor-empty">
+      ✏️ Clique <b>Corriger</b> sur une proposition pour éditer l'une ici,
+      zoomée sur la zone. Les modifications se sauvent automatiquement.
+    </div>
+  </section>
+
+  <!-- Droite : liste des propositions -->
+  <section class="corr-list">
+    <p class="hint">
+      À gauche = actuel, à droite = proposé. <b>Accepter</b> applique,
+      <b>Corriger</b> applique puis ouvre l'une à gauche pour ajuster, <b>Refuser</b> ignore.
+      Lance d'abord « Calculer ».
+    </p>
+    <div id="groups"></div>
+  </section>
+</main>
+
+<script>
+  window.LABELS = {{ labels|tojson }};
+</script>
+<script src="/static/corrections.js"></script>
+</body>
+</html>
