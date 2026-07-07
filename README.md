@@ -1,95 +1,175 @@
-# Old Times Papers — Navigateur d'unes de la presse française historique
+# 📰 Old Times Papers
 
-Petit serveur Python local pour parcourir les unes des journaux français
-numérisés par Gallica (BnF) sur une date donnée, entre ~1850 et 1955.
+**Explorer, détecter et « ressusciter » les unes de la presse française historique
+numérisée par Gallica (BnF), de ~1850 à 1955.**
 
-## Installation (une seule fois)
+On choisit une date, on parcourt les unes des grands quotidiens de l'époque, et pour
+n'importe quelle une on peut lancer une chaîne complète qui **détecte la structure de
+la page** (titres, blocs de texte, illustrations…) puis **la reconstruit en un « jumeau
+numérique »** : une page HTML navigable qui rejoue la mise en page d'origine avec le
+texte OCRisé aux mêmes emplacements.
 
-Depuis un PowerShell **Anaconda Prompt** dans le dossier du projet :
+![Le navigateur d'unes](docs/images/app.png)
 
-```powershell
-conda env create -f environment.yml
+---
+
+## Ce que contient le projet
+
+Le dépôt réunit **trois composants** qui forment une chaîne de bout en bout, mais
+restent utilisables indépendamment :
+
+| # | Composant | Rôle | Dossier |
+|---|-----------|------|---------|
+| ① | **Navigateur d'unes** | Serveur local qui interroge Gallica et affiche les unes d'une date donnée | [`app/`](app) |
+| ② | **Détection de blocs** | Outil d'annotation + entraînement d'un détecteur (YOLO) de la structure des pages | [`block-detection/`](block-detection) |
+| ③ | **Jumeau numérique** | Pipeline détection → OCR → reconstruction HTML, + le banc d'essai des moteurs OCR | [`digital-twin/`](digital-twin) |
+
+```mermaid
+flowchart LR
+    G[(Gallica BnF)] --> A[① Navigateur d'unes]
+    A -->|une choisie| D[② Détection de blocs<br/>YOLO]
+    D -->|blocs + classes| O[OCR PERO-OCR<br/>GPU]
+    O -->|texte| T[③ Jumeau numérique<br/>page HTML]
+    subgraph Entraînement
+      AN[Outil d'annotation] --> TR[Dataset YOLO] --> D
+    end
 ```
 
-Cela crée un environnement conda nommé **`oldspapers`** avec Python 3.12 et `requests`.
+---
 
-Si l'environnement existe déjà et que tu veux le mettre à jour après modification
-de `environment.yml` :
+## ① Navigateur d'unes — `app/`
 
-```powershell
-conda env update -f environment.yml --prune
-```
+Un petit serveur Python (stdlib uniquement) qui sert une page web et **proxifie
+l'API de Gallica** pour contourner CORS. Sur une date entre 1850 et 1955, il résout et
+affiche les unes des ~60 titres du catalogue, avec une timeline pour passer d'une année
+à l'autre en gardant le même jour/mois.
 
-## Utilisation
+Fonctionnement d'une résolution :
 
-À chaque session :
+1. Le JS appelle `/api/resolve?ark=cb…&date=YYYY-MM-DD`.
+2. Le serveur suit la redirection Gallica
+   `…/ark:/12148/{catalogue}/date{YYYYMMDD}` → ARK du fascicule (`bpt6k…`).
+3. La vignette est chargée via IIIF :
+   `…/iiif/ark:/12148/{bpt6k…}/f1/full/400,/0/native.jpg`.
+
+Le serveur intègre un **cache mémoire**, un **token bucket** et un **circuit breaker**
+qui se déclenche si Gallica bannit temporairement l'IP (erreurs SSL en série).
 
 ```powershell
 conda activate oldspapers
-python gallica_unes_server.py
+python app/gallica_server.py --verbose      # ouvre http://localhost:8765
 ```
 
-Le navigateur s'ouvre automatiquement sur `http://localhost:8765`.
+---
 
-Pour arrêter le serveur : `Ctrl+C` dans le terminal.
+## ② Détection de blocs — `block-detection/`
 
-### Options
+Pour reconstruire une une, il faut d'abord en connaître la **structure**. Ce composant
+entraîne un détecteur d'objets (YOLO) sur des unes annotées à la main, avec 6 classes :
+`titre`, `bloc de texte`, `texte isolé`, `header`, `illustration`, `autres`.
+
+![Annotation manuelle vs détection automatique](docs/images/block-detection.png)
+
+*À gauche : la vérité terrain saisie à la main dans l'outil d'annotation. À droite :
+ce que prédit le modèle entraîné sur une une jamais vue.*
+
+- [`annotation/`](block-detection/annotation) — serveur web d'annotation (Flask + SQLite),
+  téléchargeur d'unes depuis Gallica, aide à l'annotation (pré-OCR Tesseract, suggestions).
+- [`training/`](block-detection/training) — export du dataset au format YOLO, entraînement,
+  inférence, et génération de propositions de correction du jeu annoté.
 
 ```powershell
-python gallica_unes_server.py --verbose   # log chaque résolution dans le terminal
+conda activate bloc_detection
+python block-detection/annotation/server.py     # outil d'annotation
+python block-detection/training/train.py        # entraînement YOLO (GPU)
 ```
 
-### Endpoint de debug
+---
 
-Pour tester la résolution d'un titre à une date donnée sans passer par l'interface :
+## ③ Jumeau numérique — `digital-twin/`
 
-```
-http://localhost:8765/debug?ark=cb34355551z&date=1936-05-25
-```
+Le cœur du projet : une pipeline qui transforme le scan d'une une en une **page
+reconstruite**, bloc par bloc.
 
-## Désinstallation
+![Scan annoté et jumeau reconstruit](docs/images/digital-twin.png)
 
-Pour supprimer complètement l'environnement :
+*À gauche le scan et ses blocs détectés ; à droite le « jumeau » : le texte OCR replacé
+aux mêmes positions, titres centrés et blocs justifiés.*
+
+La chaîne (`run.py`) enchaîne trois étapes, chacune dans son environnement :
+
+1. **`detect.py`** — YOLO détecte les blocs et leurs classes → `blocks.json`.
+2. **`ocr.py`** — **PERO-OCR** (modèle presse européenne, sur GPU) OCRise chaque bloc de
+   texte. Politique figée après benchmark : PERO partout (corps, titres, texte isolé),
+   avec repli Tesseract si un bloc revient vide ; `header` → nom du journal (pas d'OCR) ;
+   `illustration` → ignoré. Un post-traitement **dé-césure** recolle les mots coupés en
+   fin de ligne (`auto-\nrité` → `autorité`, −5 % de WER).
+3. **`build.py`** — construit le `twin.html` : scan + blocs à gauche, page reconstruite à
+   droite, et au clic sur un bloc, son image et sa transcription côte à côte en bas.
 
 ```powershell
-conda env remove -n oldspapers
+python digital-twin/run.py le_temps_1936-08-08 --open
 ```
 
-## Alternative sans conda
+Le sous-dossier [`benchmark/`](digital-twin/benchmark) contient le **grand comparatif**
+des moteurs OCR (PERO, Kraken, doctr, Tesseract, Calamari…) × configurations × post-
+traitements, avec ses métriques (CER / WER). C'est lui qui a désigné PERO-OCR comme
+moteur retenu (~4 % WER, ~0,9 % CER).
 
-Si tu préfères un venv Python classique :
+---
+
+## Tests
+
+Chaque composant a une suite de tests unitaires **hermétiques** (aucun accès réseau,
+GPU, modèle ou subprocess réel — les frontières I/O sont simulées, l'état global est
+réinitialisé entre tests). Les tests d'intégration lourds sont derrière le marqueur
+`integration`, exclu par défaut.
 
 ```powershell
-python -m venv .venv
-.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python gallica_unes_server.py
+conda activate oldspapers
+python -m pytest block-detection        # 124 tests
+python -m pytest digital-twin           #  37 tests
+python -m pytest app                    #  34 tests
 ```
 
-## Structure du projet
+**195 tests** au total, tous verts sur un clone frais.
+
+---
+
+## Installation
+
+Le projet utilise plusieurs environnements conda (les moteurs OCR ont des dépendances
+incompatibles entre elles). Le plus courant, `oldspapers`, suffit pour le navigateur et
+les tests :
+
+```powershell
+conda env create -f environment.yml     # crée l'env `oldspapers` (Python 3.12)
+conda activate oldspapers
+```
+
+`curl` (livré avec Windows 10+) est utilisé comme backend HTTP vers Gallica ; `requests`
+sert de repli. Les composants détection/OCR utilisent leurs propres envs (`bloc_detection`,
+`pero`, …) — voir la doc de chaque dossier.
+
+## Structure du dépôt
 
 ```
-Oldspapers/
-├── environment.yml          # définition de l'env conda
-├── requirements.txt         # alternative pip
-├── gallica_unes_server.py   # serveur + page HTML embarquée
-└── README.md                # ce fichier
+Old-Times-Papers/
+├── app/                    # ① navigateur d'unes (serveur local Gallica)
+│   ├── gallica_server.py
+│   └── tests/
+├── block-detection/        # ② détection de la structure des pages
+│   ├── annotation/         #    outil d'annotation (Flask + SQLite)
+│   └── training/           #    export dataset + entraînement YOLO
+├── digital-twin/           # ③ pipeline détection → OCR → jumeau HTML
+│   ├── detect.py  ocr.py  build.py  run.py
+│   └── benchmark/          #    grand comparatif des moteurs OCR
+├── docs/                   # documentation & illustrations
+└── README.md
 ```
-
-## Comment ça marche
-
-1. La page HTML (servie à `/`) affiche un sélecteur de date et une grille de cartes.
-2. Pour chaque titre actif à la date choisie, le JS appelle `/api/resolve?ark=...&date=...`.
-3. Le serveur Python suit la redirection de Gallica :
-   `https://gallica.bnf.fr/ark:/12148/{cb_catalogue}/date{YYYYMMDD}`
-   → retourne l'ARK du fascicule (`bpt6k...`).
-4. Le JS charge la vignette via l'API IIIF de Gallica :
-   `https://gallica.bnf.fr/iiif/ark:/12148/{bpt6k...}/f1/full/400,/0/native.jpg`
-
-Le serveur sert uniquement de proxy pour contourner CORS (Gallica n'autorise pas
-les requêtes JS cross-origin depuis un navigateur).
 
 ## Sources
 
 - [Gallica BnF](https://gallica.bnf.fr) — bibliothèque numérique (contenu domaine public)
-- [API BnF](https://api.bnf.fr) — documentation des API Gallica/IIIF/SRU
+- [API BnF](https://api.bnf.fr) — API Gallica / IIIF / SRU / Issues
+- [PERO-OCR](https://github.com/DCGM/pero-ocr) — moteur OCR retenu pour la presse ancienne
