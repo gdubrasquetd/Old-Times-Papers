@@ -39,6 +39,31 @@ def crop_b64(im, box, maxw=680):
     return base64.b64encode(buf.getvalue()).decode()
 
 
+def _iou(a, b):
+    ax0, ay0, ax1, ay1 = a["box"]; bx0, by0, bx1, by1 = b["box"]
+    inter = max(0, min(ax1, bx1) - max(ax0, bx0)) * max(0, min(ay1, by1) - max(ay0, by0))
+    if not inter:
+        return 0.0
+    ua = (ax1 - ax0) * (ay1 - ay0) + (bx1 - bx0) * (by1 - by0) - inter
+    return inter / ua if ua else 0.0
+
+
+def dedup_blocks(blocks, iou_thresh=0.6):
+    """Retire les blocs quasi superposés (IoU > seuil) portant le MÊME texte ;
+    garde celui de meilleure confiance. Renvoie (blocs_gardés, nb_retirés)."""
+    def _nt(s):
+        return re.sub(r"\s+", "", (s or "").lower())
+    drop = set()
+    for i in range(len(blocks)):
+        for j in range(i + 1, len(blocks)):
+            if i in drop or j in drop:
+                continue
+            ti, tj = _nt(blocks[i].get("text")), _nt(blocks[j].get("text"))
+            if ti and ti == tj and _iou(blocks[i], blocks[j]) > iou_thresh:
+                drop.add(j if blocks[i].get("conf", 0) >= blocks[j].get("conf", 0) else i)
+    return [b for k, b in enumerate(blocks) if k not in drop], len(drop)
+
+
 def main():
     data = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
     out = Path(sys.argv[2])
@@ -46,29 +71,9 @@ def main():
     W, H = data["img_w"], data["img_h"]
 
     # dédup : blocs quasi superposés portant le même texte -> on n'en garde qu'un
-    def _iou(a, b):
-        ax0, ay0, ax1, ay1 = a["box"]; bx0, by0, bx1, by1 = b["box"]
-        inter = max(0, min(ax1, bx1) - max(ax0, bx0)) * max(0, min(ay1, by1) - max(ay0, by0))
-        if not inter:
-            return 0.0
-        ua = (ax1 - ax0) * (ay1 - ay0) + (bx1 - bx0) * (by1 - by0) - inter
-        return inter / ua if ua else 0.0
-
-    def _nt(s):
-        return re.sub(r"\s+", "", (s or "").lower())
-
-    blocks = data["blocks"]
-    drop = set()
-    for i in range(len(blocks)):
-        for j in range(i + 1, len(blocks)):
-            if i in drop or j in drop:
-                continue
-            ti, tj = _nt(blocks[i].get("text")), _nt(blocks[j].get("text"))
-            if ti and ti == tj and _iou(blocks[i], blocks[j]) > 0.6:
-                drop.add(j if blocks[i].get("conf", 0) >= blocks[j].get("conf", 0) else i)
-    data["blocks"] = [b for k, b in enumerate(blocks) if k not in drop]
-    if drop:
-        print(f"  dédup : {len(drop)} blocs superposés retirés", flush=True)
+    data["blocks"], n_drop = dedup_blocks(data["blocks"])
+    if n_drop:
+        print(f"  dédup : {n_drop} blocs superposés retirés", flush=True)
 
     disp = im.copy()
     if disp.width > 1500:
