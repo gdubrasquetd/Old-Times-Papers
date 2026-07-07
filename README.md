@@ -24,16 +24,7 @@ restent utilisables indépendamment :
 | ② | **Détection de blocs** | Outil d'annotation + entraînement d'un détecteur (YOLO) de la structure des pages | [`block-detection/`](block-detection) |
 | ③ | **Jumeau numérique** | Pipeline détection → OCR → reconstruction HTML, + le banc d'essai des moteurs OCR | [`digital-twin/`](digital-twin) |
 
-```mermaid
-flowchart LR
-    G[(Gallica BnF)] --> A[① Navigateur d'unes]
-    A -->|une choisie| D[② Détection de blocs<br/>YOLO]
-    D -->|blocs + classes| O[OCR PERO-OCR<br/>GPU]
-    O -->|texte| T[③ Jumeau numérique<br/>page HTML]
-    subgraph Entraînement
-      AN[Outil d'annotation] --> TR[Dataset YOLO] --> D
-    end
-```
+![Pipeline du projet](docs/images/pipeline.png)
 
 ---
 
@@ -65,13 +56,28 @@ python app/gallica_server.py --verbose      # ouvre http://localhost:8765
 ## ② Détection de blocs — `block-detection/`
 
 Pour reconstruire une une, il faut d'abord en connaître la **structure**. Ce composant
-entraîne un détecteur d'objets (YOLO) sur des unes annotées à la main, avec 6 classes :
-`titre`, `bloc de texte`, `texte isolé`, `header`, `illustration`, `autres`.
+entraîne un détecteur d'objets (YOLO) sur des unes annotées à la main. Le modèle détecte
+5 classes : `header`, `titre`, `bloc de texte`, `texte isolé`, `illustration` (la classe
+`autres`, marginale, est exclue à l'export du dataset).
 
-![Annotation manuelle vs détection automatique](docs/images/block-detection.png)
+![Vérité terrain vs prédiction sur une une de test](docs/images/block-detection.png)
 
-*À gauche : la vérité terrain saisie à la main dans l'outil d'annotation. À droite :
-ce que prédit le modèle entraîné sur une une jamais vue.*
+*Le Matin, 16 juin 1925 — une **une de test** (jamais vue à l'entraînement). À gauche la
+vérité terrain (111 blocs annotés), à droite la prédiction du modèle (116 blocs) : les
+deux mises en page se superposent presque parfaitement.*
+
+**Performances** du détecteur (YOLO11s, `conf=0.30`, `imgsz=1280`) mesurées sur le jeu
+de test (11 unes held-out) :
+
+| Métrique | Global | header | titre | bloc de texte | illustration | texte isolé |
+|----------|:------:|:------:|:-----:|:-------------:|:------------:|:-----------:|
+| Précision | **0,84** | 1,00 | 0,85 | 0,94 | 0,79 | 0,64 |
+| Rappel | **0,87** | 0,99 | 0,86 | 0,93 | 0,94 | 0,61 |
+| mAP@50 | **0,87** | 0,99 | 0,92 | 0,97 | 0,87 | 0,62 |
+| mAP@50-95 | **0,71** | 0,83 | 0,65 | 0,89 | 0,75 | 0,41 |
+
+Les classes structurantes (`header`, `bloc de texte`, `titre`) sont très bien détectées ;
+le `texte isolé` (légendes, entrefilets courts) reste le plus difficile.
 
 - [`annotation/`](block-detection/annotation) — serveur web d'annotation (Flask + SQLite),
   téléchargeur d'unes depuis Gallica, aide à l'annotation (pré-OCR Tesseract, suggestions).
