@@ -1,5 +1,5 @@
 """Pipeline COMPLÈTE d'une une -> jumeau numérique.
-Enchaîne : détection (YOLO) -> OCR routé (Kraken + doctr) -> jumeau HTML.
+Enchaîne : détection (YOLO) -> OCR (PERO-OCR, GPU) -> jumeau HTML.
 Chaque étape tourne dans son env conda via subprocess.
 
     python run.py <slug|image.jpg> [--open]
