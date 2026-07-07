@@ -21,7 +21,7 @@ import argparse, sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-ANNOT_DIR = ROOT.parent / "annotation_tool"
+ANNOT_DIR = ROOT.parent / "annotation"
 DEFAULT_WEIGHTS = ROOT / "runs" / "multiclass_yolo11s_v3" / "weights" / "best.pt"
 
 sys.path.insert(0, str(ANNOT_DIR))

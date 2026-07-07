@@ -1,24 +1,9 @@
-"""Tests d'integration des routes Flask via app.test_client()."""
+"""Tests des routes Flask via app.test_client() (fixture `client` dans conftest)."""
 from __future__ import annotations
 import pathlib
-import pytest
 from PIL import Image
 
 import db
-
-
-@pytest.fixture
-def client(tmp_path, monkeypatch):
-    # Import tardif : la fixture autouse `isolated_db` a deja patche db.DB_PATH.
-    import server
-    # Neutraliser le replenisseur (sinon il lance un thread + des appels HTTP Gallica).
-    monkeypatch.setattr(server, "_maybe_trigger_replenish", lambda: None)
-    # Isoler le cache de thumbs dans tmp_path (sinon les tests ecrivent dans data/thumbs/).
-    monkeypatch.setattr(server, "THUMB_DIR", tmp_path / "thumbs")
-    server.THUMB_DIR.mkdir(parents=True, exist_ok=True)
-    server.app.config["TESTING"] = True
-    with server.app.test_client() as c:
-        yield c
 
 
 def _real_img(tmp_path, slug="le_figaro_1930-05-25", w=1000, h=1400):

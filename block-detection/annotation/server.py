@@ -28,7 +28,7 @@ THUMB_DIR.mkdir(parents=True, exist_ok=True)
 # Détection à la demande (bouton dans l'UI) : le serveur tourne dans l'env
 # `oldspapers` (sans torch), il shelle donc vers le python de `bloc_detection`
 # qui exécute suggest.py sur l'image courante. Surchageable par variables d'env.
-BLOC_DIR    = ROOT.parent / "bloc_detection"
+BLOC_DIR    = ROOT.parent / "training"
 BLOC_PYTHON = os.environ.get(
     "BLOC_DETECTION_PYTHON",
     str(pathlib.Path.home() / ".conda" / "envs" / "bloc_detection" / "python.exe"),

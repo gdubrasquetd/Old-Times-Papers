@@ -14,7 +14,10 @@ Usage :
 """
 from __future__ import annotations
 import sys, re, pathlib, time, subprocess, shutil, argparse, random
-sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+try:  # console Windows cp1252 ; stdout peut ne pas exposer reconfigure (ex: capture pytest)
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from PIL import Image

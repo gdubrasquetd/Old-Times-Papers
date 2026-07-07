@@ -23,7 +23,7 @@ import sqlite3
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-DB_PATH = ROOT.parent / "annotation_tool" / "data" / "annotations.db"
+DB_PATH = ROOT.parent / "annotation" / "data" / "annotations.db"
 OUT_DIR_MULTI = ROOT / "dataset"          # 6 classes
 OUT_DIR_SINGLE = ROOT / "dataset_blocs"   # 1 classe 'bloc' (class-agnostic)
 
@@ -102,7 +102,7 @@ def export(val_ratio: float = 0.2, seed: int = 42, clean: bool = True,
 
         src = Path(img["path"])
         if not src.is_absolute():
-            src = (ROOT.parent / "annotation_tool" / src).resolve()
+            src = (ROOT.parent / "annotation" / src).resolve()
         if not src.exists():
             print(f"  ! image manquante, ignorée : {img['slug']} ({src})")
             continue

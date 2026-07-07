@@ -17,7 +17,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-ANNOT_DIR = ROOT.parent / "annotation_tool"
+ANNOT_DIR = ROOT.parent / "annotation"
 DEFAULT_WEIGHTS = ROOT / "runs" / "blocs_yolo11s" / "weights" / "best.pt"
 
 # db.py de l'outil d'annotation (stdlib pure : importable dans cet env aussi)
