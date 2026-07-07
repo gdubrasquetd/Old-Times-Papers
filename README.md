@@ -91,10 +91,12 @@ python block-detection/training/train.py        # entraînement YOLO (GPU)
 Le cœur du projet : une pipeline qui transforme le scan d'une une en une **page
 reconstruite**, bloc par bloc.
 
-![Scan annoté et jumeau reconstruit](docs/images/digital-twin.png)
+![Le jumeau numérique du Gaulois avec son panneau de contrôle](docs/images/digital-twin.png)
 
-*À gauche le scan et ses blocs détectés ; à droite le « jumeau » : le texte OCR replacé
-aux mêmes positions, titres centrés et blocs justifiés.*
+*En haut : à gauche le scan et ses blocs détectés, à droite le « jumeau » (texte OCR
+replacé aux mêmes positions, titres centrés, blocs justifiés). En bas, le panneau de
+contrôle : au clic sur un bloc (ici le bloc 21), son image lisible et sa transcription
+OCR s'affichent côte à côte pour vérification.*
 
 La chaîne (`run.py`) enchaîne trois étapes, chacune dans son environnement :
 
