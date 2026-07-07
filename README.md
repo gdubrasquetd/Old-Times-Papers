@@ -67,17 +67,24 @@ vérité terrain (111 blocs annotés), à droite la prédiction du modèle (116 
 deux mises en page se superposent presque parfaitement.*
 
 **Performances** du détecteur (YOLO11s, `conf=0.30`, `imgsz=1280`) mesurées sur le jeu
-de test (11 unes held-out) :
+de test (11 unes held-out, 724 blocs) :
+
+> 🎯 **Accuracy de classification : 94,6 %** — un bloc bien localisé reçoit la bonne classe
+> 19 fois sur 20.
+> 📐 **IoU moyen des boîtes : 0,89** — les cadres épousent de près les blocs réels
+> (90 % ont un IoU ≥ 0,75).
 
 | Métrique | Global | header | titre | bloc de texte | illustration | texte isolé |
 |----------|:------:|:------:|:-----:|:-------------:|:------------:|:-----------:|
-| Précision | **0,84** | 1,00 | 0,85 | 0,94 | 0,79 | 0,64 |
-| Rappel | **0,87** | 0,99 | 0,86 | 0,93 | 0,94 | 0,61 |
-| mAP@50 | **0,87** | 0,99 | 0,92 | 0,97 | 0,87 | 0,62 |
-| mAP@50-95 | **0,71** | 0,83 | 0,65 | 0,89 | 0,75 | 0,41 |
+| **Accuracy** (classe) | **0,95** | 0,91 | 0,96 | 0,98 | 1,00 | 0,81 |
+| **IoU moyen** (localisation) | **0,89** | 0,91 | 0,85 | 0,95 | 0,93 | 0,85 |
+| Précision | 0,84 | 1,00 | 0,85 | 0,94 | 0,79 | 0,64 |
+| Rappel | 0,87 | 0,99 | 0,86 | 0,93 | 0,94 | 0,61 |
+| mAP@50 | 0,87 | 0,99 | 0,92 | 0,97 | 0,87 | 0,62 |
+| mAP@50-95 | 0,71 | 0,83 | 0,65 | 0,89 | 0,75 | 0,41 |
 
-Les classes structurantes (`header`, `bloc de texte`, `titre`) sont très bien détectées ;
-le `texte isolé` (légendes, entrefilets courts) reste le plus difficile.
+Les classes structurantes (`header`, `bloc de texte`, `titre`) sont très bien détectées et
+très bien localisées ; le `texte isolé` (légendes, entrefilets courts) reste le plus difficile.
 
 - [`annotation/`](block-detection/annotation) — serveur web d'annotation (Flask + SQLite),
   téléchargeur d'unes depuis Gallica, aide à l'annotation (pré-OCR Tesseract, suggestions).
