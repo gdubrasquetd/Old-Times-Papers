@@ -146,6 +146,9 @@ CACHE_DIR      = pathlib.Path(__file__).parent / "cache"
 OCR_CACHE_DIR  = CACHE_DIR / "ocr"
 IMG_CACHE_DIR  = CACHE_DIR / "ocr_img"
 META_CACHE_DIR = CACHE_DIR / "meta"
+# Résumés + thèmes précalculés par la pipeline digital-twin, publiés par ARK
+# (voir digital-twin/publish_summary.py). Le serveur ne fait que les servir.
+SUMMARY_CACHE_DIR = CACHE_DIR / "summary"
 
 # Semaphore séparé pour les requêtes de contenu (OCR, DC) — plus restrictif
 # que pour les métadonnées légères (API Issues).
@@ -806,6 +809,20 @@ ARTICLE_PAGE = r"""<!doctype html>
   a.gal-link { color: var(--link); text-decoration: none; font-size: .9rem; }
   a.gal-link:hover { text-decoration: underline; }
 
+  /* Résumé & thèmes */
+  .chips { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .7rem; }
+  .chip { font-family: sans-serif; font-size: .75rem; padding: .12rem .6rem;
+          border-radius: 11px; background: #ececec; color: #444; }
+  .chip.theme { background: var(--link); color: #fff; font-weight: bold; }
+  .sum-global { line-height: 1.65; }
+  .art { border-top: 1px solid #eee; padding: .5rem 0; }
+  .art > summary { cursor: pointer; font-weight: bold; font-size: .92rem;
+                   color: var(--accent); list-style-position: outside; }
+  .art > summary:hover { text-decoration: underline; }
+  .art .art-body { margin: .45rem 0 .2rem; font-size: .9rem; line-height: 1.55; }
+  .art .chips { margin: .3rem 0 0; }
+  .art-degraded { color: var(--muted); font-style: italic; }
+
   .steps-row { display: flex; gap: 2rem; margin: .6rem 0 .5rem; }
   .step-item { display: flex; align-items: center; gap: .4rem; font-size: .82rem;
                color: var(--muted); transition: color .3s, opacity .3s; opacity: .45; }
@@ -882,6 +899,32 @@ ARTICLE_PAGE = r"""<!doctype html>
       <h2>Présentation BnF</h2>
       <p id="metaDescription"></p>
       <p class="note" id="metaPublisher"></p>
+    </div>
+
+    <div class="section" id="summarySection">
+      <h2>Résumé &amp; thèmes</h2>
+      <div id="sumPending">
+        <button class="btn" id="sumBtn" onclick="loadSummary()">Charger le résumé</button>
+        <p class="note" style="margin-top:.5rem">
+          Résumé par article et thèmes de la une, calculés hors-ligne par la pipeline
+          (détection de blocs → OCR → modèle de langue local).
+        </p>
+      </div>
+      <div id="sumNone" style="display:none">
+        <p class="note">Aucun résumé n'a encore été généré pour ce numéro.</p>
+      </div>
+      <div id="sumError" style="display:none">
+        <p class="note" id="sumErrMsg" style="color:#a00"></p>
+      </div>
+      <div id="sumResult" style="display:none">
+        <div class="chips" id="sumChips"></div>
+        <p class="sum-global" id="sumGlobal"></p>
+        <div id="sumArticles"></div>
+        <p class="note" style="margin-top:.7rem">
+          ⚠ Résumés générés automatiquement à partir d'un OCR imparfait : ils peuvent
+          contenir des erreurs ou des omissions.
+        </p>
+      </div>
     </div>
 
     <div class="section" id="ocrSection">
@@ -1025,6 +1068,65 @@ document.getElementById("linkIssue").href =
   issueArk ? `https://gallica.bnf.fr/ark:/12148/${issueArk}` : "#";
 document.getElementById("linkCal").href =
   catalogArk ? `https://gallica.bnf.fr/ark:/12148/${catalogArk}/date${yyyymmdd}` : "#";
+
+// ── Résumé & thèmes (servi précalculé par /api/summary) ──────────────────
+function _chip(text, cls) {
+  const s = document.createElement("span");
+  s.className = "chip" + (cls ? " " + cls : "");
+  s.textContent = text;
+  return s;
+}
+
+function _renderSummary(d) {
+  const chips = document.getElementById("sumChips");
+  (d.global.themes || []).forEach(t => chips.appendChild(_chip(t, "theme")));
+  (d.global.keywords || []).forEach(k => chips.appendChild(_chip(k)));
+  document.getElementById("sumGlobal").textContent = d.global.summary || "";
+
+  const box = document.getElementById("sumArticles");
+  (d.articles || []).forEach(a => {
+    const det = document.createElement("details");
+    det.className = "art";
+    const sum = document.createElement("summary");
+    sum.textContent = a.headline || "(brève sans titre)";
+    det.appendChild(sum);
+
+    const body = document.createElement("p");
+    body.className = "art-body" + (a.degraded ? " art-degraded" : "");
+    body.textContent = a.summary || "(pas de résumé)";
+    det.appendChild(body);
+
+    const ch = document.createElement("div");
+    ch.className = "chips";
+    (a.themes || []).forEach(t => ch.appendChild(_chip(t, "theme")));
+    (a.keywords || []).forEach(k => ch.appendChild(_chip(k)));
+    det.appendChild(ch);
+    box.appendChild(det);
+  });
+  document.getElementById("sumResult").style.display = "";
+}
+
+async function loadSummary() {
+  const btn = document.getElementById("sumBtn");
+  btn.disabled = true; btn.textContent = "Chargement…";
+  try {
+    const r = await fetch(`/api/summary?ark=${encodeURIComponent(issueArk)}`);
+    const d = await r.json();
+    document.getElementById("sumPending").style.display = "none";
+    if (d.error) {
+      document.getElementById("sumErrMsg").textContent = d.error;
+      document.getElementById("sumError").style.display = "";
+    } else if (!d.available) {
+      document.getElementById("sumNone").style.display = "";
+    } else {
+      _renderSummary(d);
+    }
+  } catch (e) {
+    document.getElementById("sumPending").style.display = "none";
+    document.getElementById("sumErrMsg").textContent = `Erreur réseau : ${e}`;
+    document.getElementById("sumError").style.display = "";
+  }
+}
 
 // ── OpenSeadragon — viewer IIIF tuilé (qualité native) ────────────────────
 // Chaque tuile 512px est servie à meilleure qualité que le JPEG pleine page.
@@ -1733,6 +1835,16 @@ class Handler(http.server.BaseHTTPRequestHandler):
                        json.dumps(result, ensure_ascii=False).encode("utf-8"))
             return
 
+        if parsed.path == "/api/summary":
+            params = urllib.parse.parse_qs(parsed.query)
+            ark = (params.get("ark") or [""])[0]
+            result = self._get_summary(ark)
+            if VERBOSE:
+                print(f"  [summary] {ark} → {result.get('available', False)}")
+            self._send(200, "application/json; charset=utf-8",
+                       json.dumps(result, ensure_ascii=False).encode("utf-8"))
+            return
+
         if parsed.path == "/api/meta":
             params = urllib.parse.parse_qs(parsed.query)
             ark = (params.get("ark") or [""])[0]
@@ -2028,6 +2140,21 @@ class Handler(http.server.BaseHTTPRequestHandler):
         cache_file.write_text(body, encoding="utf-8")
         return {"text": body, "cached": False, "length": len(body)}
 
+    def _get_summary(self, issue_ark):
+        """Sert un résumé précalculé. Aucune génération à la demande : la pipeline
+        (détection -> OCR -> LLM) dure plusieurs minutes et tourne hors-ligne."""
+        if not ISSUE_ARK_FULL_RE.match(issue_ark or ""):
+            return {"error": "invalid ark format"}
+        cache_file = SUMMARY_CACHE_DIR / f"{issue_ark}.json"
+        if not cache_file.exists():
+            return {"available": False, "reason": "summary not generated"}
+        try:
+            data = json.loads(cache_file.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as e:
+            return {"error": f"cache illisible: {e}"}
+        data["available"] = True
+        return data
+
     def _get_meta(self, issue_ark):
         if not ISSUE_ARK_FULL_RE.match(issue_ark):
             return {"error": "invalid ark format"}
@@ -2110,6 +2237,7 @@ def main():
     OCR_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     IMG_CACHE_DIR.mkdir(parents=True, exist_ok=True)
     META_CACHE_DIR.mkdir(parents=True, exist_ok=True)
+    SUMMARY_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
     port = find_free_port()
     if port is None:

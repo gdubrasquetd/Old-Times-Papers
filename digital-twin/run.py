@@ -21,6 +21,7 @@ ENVS = {
     "oldspapers":     r"C:/Users/antwi/.conda/envs/oldspapers/python.exe",
     "ocr_torch":      r"C:/Users/antwi/.conda/envs/ocr_torch/python.exe",
     "pero":           r"C:/Users/antwi/.conda/envs/pero/python.exe",
+    "llm":            r"C:/Users/antwi/.conda/envs/llm/python.exe",
 }
 
 
@@ -40,18 +41,27 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("target", help="slug (ex: le_temps_1936-08-08) ou chemin d'image")
     ap.add_argument("--open", action="store_true")
+    ap.add_argument("--no-summary", action="store_true",
+                    help="saute le résumé LLM (étape la plus lente)")
     args = ap.parse_args()
     slug = Path(args.target).stem
     workdir = HERE / "out" / slug
     workdir.mkdir(parents=True, exist_ok=True)
     blocks = workdir / "blocks.json"
     twin = workdir / "twin.html"
+    arts_png = workdir / "articles.png"
+    summary = workdir / "summary.json"
 
     run("bloc_detection", "detect.py", args.target, blocks)
     run("pero", "ocr.py", blocks, "--stage", "pero")   # PERO : un seul moteur pour tout le texte
     run("oldspapers", "build.py", blocks, twin)        # PIL suffit
+    run("oldspapers", "articles.py", blocks, arts_png)  # regroupement + PNG de contrôle
+    if not args.no_summary:
+        run("llm", "summarize.py", blocks, summary)     # résumé + thèmes (GPU)
 
     print(f"\n✓ Jumeau prêt : {twin}")
+    if not args.no_summary:
+        print(f"✓ Résumé      : {summary}")
     if args.open:
         webbrowser.open(twin.as_uri())
 

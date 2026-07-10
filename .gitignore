@@ -16,12 +16,15 @@ __pycache__/
 *.h5
 *.ckpt
 digital-twin/benchmark/comp/models/
+digital-twin/models/
+*.gguf
 block-detection/training/runs/
 block-detection/training/dataset/
 block-detection/training/dataset_blocs/
 
 # --- Données / scans / caches ---
 block-detection/annotation/data/
+app/cache/
 *.jpg
 *.jpeg
 *.zip
